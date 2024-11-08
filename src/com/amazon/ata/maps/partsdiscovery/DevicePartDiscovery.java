@@ -1,8 +1,6 @@
 package com.amazon.ata.maps.partsdiscovery;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helps expose key words from new editions of part catalogs.
@@ -16,8 +14,23 @@ public class DevicePartDiscovery {
      * @return A Map of words that appear in the catalog to the number of times they appear.
      */
     public Map<String, Integer> calculateWordCounts(PartCatalog catalog) {
-        // PARTICIPANTS: Implement calculateWordCounts()
-        return Collections.emptyMap();
+        //Key = word, Value = word count
+        Map<String, Integer> returnMap = new HashMap<>();
+
+        //Go through partCatalog list of words and look at each word
+        for (String word : catalog.getCatalogWords()) {
+            //Check to see if the word is already in our map
+            if (returnMap.containsKey(word)) {
+                int currentCount = returnMap.get(word);
+                currentCount++;
+                returnMap.put(word, currentCount);
+                //if it is, retrieve its current count, increment its count, store new count
+                //if it is not, add the word to the map with the count of 1
+            } else {
+                returnMap.put(word, 1);
+            }
+        }
+        return returnMap;
     }
 
     // --- Part B ---
@@ -27,8 +40,7 @@ public class DevicePartDiscovery {
      * @param wordCounts the map to remove the word from
      */
     public void removeWord(String word, Map<String, Integer> wordCounts) {
-        // PARTICIPANTS: Implement removeWord()
-        return;
+        wordCounts.remove(word);
     }
 
     // --- Part C ---
@@ -38,8 +50,15 @@ public class DevicePartDiscovery {
      * @return The word that appears most frequently in the catalog to the number of times they appear.
      */
     public String getMostFrequentWord(Map<String, Integer> wordCounts) {
-        // PARTICIPANTS: Implement getMostFrequentWord()
-        return null;
+        String mostFrequentWord = null; //Used to store the current most frequent word
+        int highestCountSoFar = -1; //Used to store its count
+        for (Map.Entry<String, Integer> anEntry : wordCounts.entrySet()) {
+            if (anEntry.getValue() > highestCountSoFar) {
+                mostFrequentWord = anEntry.getKey();
+                highestCountSoFar = anEntry.getValue();
+            }
+        }
+        return mostFrequentWord;
     }
 
     // --- Part D ---
@@ -52,7 +71,11 @@ public class DevicePartDiscovery {
      * @return a map associating each word with its TF-IDF score.
      */
     public Map<String, Double> getTfIdfScores(Map<String, Integer> wordCounts, Map<String, Double> idfScores) {
-        // PARTICIPANTS: Implement getTfIdfScores()
-        return Collections.emptyMap();
+        //Instantiate the return object
+        Map<String, Double> tfIdfScores = new TreeMap<>();
+        for (Map.Entry<String, Integer> anEntry : wordCounts.entrySet()) {
+            tfIdfScores.put(anEntry.getKey(), anEntry.getValue() * idfScores.get(anEntry.getKey()));
+        }
+        return tfIdfScores;
     }
 }
